@@ -1,6 +1,6 @@
 package ${basePackage}.web;
-import ${basePackage}.core.Result;
-import ${basePackage}.core.ResultGenerator;
+import ${basePackage}.core.BaseController;
+import ${basePackage}.core.ApiResponse;
 import ${basePackage}.model.${modelNameUpperCamel};
 import ${basePackage}.service.${modelNameUpperCamel}Service;
 import com.github.pagehelper.PageHelper;
@@ -25,39 +25,39 @@ import java.util.List;
 */
 @RestController
 @RequestMapping("${baseRequestMapping}")
-public class ${modelNameUpperCamel}Controller {
+public class ${modelNameUpperCamel}Controller extends BaseController{
     @Resource
     private ${modelNameUpperCamel}Service ${modelNameLowerCamel}Service;
 
     @PostMapping("/add")
-    public Result add(${modelNameUpperCamel} ${modelNameLowerCamel}) {
+    public ApiResponse add(${modelNameUpperCamel} ${modelNameLowerCamel}) {
         ${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public ApiResponse delete(@RequestParam Integer id) {
         ${modelNameLowerCamel}Service.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/update")
-    public Result update(${modelNameUpperCamel} ${modelNameLowerCamel}) {
+    public ApiResponse update(${modelNameUpperCamel} ${modelNameLowerCamel}) {
         ${modelNameLowerCamel}Service.update(${modelNameLowerCamel});
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public ApiResponse detail(@RequestParam Integer id) {
         ${modelNameUpperCamel} ${modelNameLowerCamel} = ${modelNameLowerCamel}Service.findById(id);
-        return ResultGenerator.genSuccessResult(${modelNameLowerCamel});
+        return ApiResponse.creatSuccess(${modelNameLowerCamel});
     }
 
     @PostMapping("/list")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    public ApiResponse list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<${modelNameUpperCamel}> list = ${modelNameLowerCamel}Service.findAll();
         PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        return ApiResponse.creatSuccess(pageInfo);
     }
 }

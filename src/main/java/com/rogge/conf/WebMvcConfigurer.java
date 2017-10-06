@@ -4,8 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
-import com.rogge.core.Result;
-import com.rogge.core.ResultCode;
+import com.rogge.common.intercept.LoginInterceptor;
+import com.rogge.core.ApiResponse;
+import com.rogge.core.ResponseCode;
 import com.rogge.core.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,8 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,17 +42,22 @@ import java.util.List;
 @Configuration
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
-    
+
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
+
+    @Resource
+    private LoginInterceptor mLoginInterceptor;
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        // TODO: 2017/10/6 0006 此版本的FastJsonHttpMessageConverter4在做加密的时候会因为ContentLength固定导致加密数据丢失一部分需要自定义FastJsonHttpMessageConverter4
         FastJsonHttpMessageConverter4 converter = new FastJsonHttpMessageConverter4();
         FastJsonConfig config = new FastJsonConfig();
         config.setSerializerFeatures(SerializerFeature.WriteMapNullValue,//保留空的字段
                 SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
+                SerializerFeature.WriteEnumUsingToString,//使枚举返回ordinal
                 SerializerFeature.WriteNullNumberAsZero);//Number null -> 0
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
@@ -64,16 +70,20 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
         exceptionResolvers.add(new HandlerExceptionResolver() {
             public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
-                Result result = new Result();
+                ApiResponse lApiResponse = new ApiResponse();
                 if (e instanceof ServiceException) {//业务失败的异常，如“账号或密码错误”
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
+                    lApiResponse.setCode(ResponseCode.Base.ERROR);
+                    lApiResponse.setMsg(e.getMessage());
                     logger.info(e.getMessage());
                 } else if (e instanceof NoHandlerFoundException) {
-                    result.setCode(ResultCode.NOT_FOUND).setMessage("接口 [" + request.getRequestURI() + "] 不存在");
+                    lApiResponse.setCode(ResponseCode.Base.API_NO_EXISTS);
+                    lApiResponse.setMsg("接口 [" + request.getRequestURI() + "] 不存在");
                 } else if (e instanceof ServletException) {
-                    result.setCode(ResultCode.FAIL).setMessage(e.getMessage());
+                    lApiResponse.setCode(ResponseCode.Base.ERROR);
+                    lApiResponse.setMsg(e.getMessage());
                 } else {
-                    result.setCode(ResultCode.INTERNAL_SERVER_ERROR).setMessage("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员");
+                    lApiResponse.setCode(ResponseCode.Base.API_ERR);
+                    lApiResponse.setMsg("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员");
                     String message;
                     if (handler instanceof HandlerMethod) {
                         HandlerMethod handlerMethod = (HandlerMethod) handler;
@@ -87,7 +97,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                     }
                     logger.error(message, e);
                 }
-                responseResult(response, result);
+                responseResult(response, lApiResponse);
                 return new ModelAndView();
             }
 
@@ -103,24 +113,18 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     //添加拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        //接口签名认证拦截器，该签名认证比较简单，实际项目中可以使用Json Web Token或其他更好的方式替代。
-        if (!"dev".equals(env)) { //开发环境忽略签名认证
-            registry.addInterceptor(new HandlerInterceptorAdapter() {
-                @Override
-                public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-                    logger.info("prod启动");
-                    return true;
-                }
-            });
-        }
+        //登录过滤器
+        registry.addInterceptor(mLoginInterceptor)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/showHello", "/showHi");
     }
 
-    private void responseResult(HttpServletResponse response, Result result) {
+    private void responseResult(HttpServletResponse response, ApiResponse apiResponse) {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         response.setStatus(200);
         try {
-            response.getWriter().write(JSON.toJSONString(result));
+            response.getWriter().write(JSON.toJSONString(apiResponse));
         } catch (IOException ex) {
             logger.error(ex.getMessage());
         }

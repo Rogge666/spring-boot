@@ -6,6 +6,10 @@ spring:
   profiles:
     active: dev
 
+  output:
+    ansi:
+      enabled: always   #多彩log
+
 logging:
   level:
     com.rogge: debug

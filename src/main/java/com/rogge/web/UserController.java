@@ -1,6 +1,5 @@
 package com.rogge.web;
-import com.rogge.core.Result;
-import com.rogge.core.ResultGenerator;
+import com.rogge.core.ApiResponse;
 import com.rogge.model.User;
 import com.rogge.service.UserService;
 import com.github.pagehelper.PageHelper;
@@ -30,34 +29,34 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/add")
-    public Result add(User user) {
+    public ApiResponse add(User user) {
         userService.save(user);
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public ApiResponse delete(@RequestParam Integer id) {
         userService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/update")
-    public Result update(User user) {
+    public ApiResponse update(User user) {
         userService.update(user);
-        return ResultGenerator.genSuccessResult();
+        return ApiResponse.creatSuccess();
     }
 
     @PostMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public ApiResponse detail(@RequestParam Integer id) {
         User user = userService.findById(id);
-        return ResultGenerator.genSuccessResult(user);
+        return ApiResponse.creatSuccess(user);
     }
 
     @PostMapping("/list")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    public ApiResponse list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<User> list = userService.findAll();
         PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        return ApiResponse.creatSuccess(pageInfo);
     }
 }
