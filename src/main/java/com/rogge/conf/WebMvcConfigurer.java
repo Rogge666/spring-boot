@@ -8,6 +8,7 @@ import com.rogge.common.intercept.LoginInterceptor;
 import com.rogge.core.ApiResponse;
 import com.rogge.core.ResponseCode;
 import com.rogge.core.ServiceException;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,6 +82,8 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                 } else if (e instanceof ServletException) {
                     lApiResponse.setCode(ResponseCode.Base.ERROR);
                     lApiResponse.setMsg(e.getMessage());
+                } else if (e.getCause() instanceof TooManyResultsException) {
+                    lApiResponse = ApiResponse.creatFail(ResponseCode.Base.TOO_MANY_EXCEP);
                 } else {
                     lApiResponse.setCode(ResponseCode.Base.API_ERR);
                     lApiResponse.setMsg("接口 [" + request.getRequestURI() + "] 内部错误，请联系管理员");
@@ -124,7 +127,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         response.setStatus(200);
         try {
-            response.getWriter().write(JSON.toJSONString(apiResponse));
+            response.getWriter().write(JSON.toJSONString(apiResponse, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteEnumUsingToString));
         } catch (IOException ex) {
             logger.error(ex.getMessage());
         }

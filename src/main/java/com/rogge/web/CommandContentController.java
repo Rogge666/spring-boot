@@ -1,4 +1,5 @@
 package com.rogge.web;
+
 import com.rogge.common.model.User;
 import com.rogge.core.ApiResponse;
 import com.rogge.core.BaseController;
@@ -13,22 +14,21 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
-* [Description]
-* <p>
-* [How to use]
-* <p>
-* [Tips]
-*
-* @author Created by Rogge on 2017/10/06
-* @since 1.0.0
-*/
+ * [Description]
+ * <p>
+ * [How to use]
+ * <p>
+ * [Tips]
+ *
+ * @author Created by Rogge on 2017/10/06
+ * @since 1.0.0
+ */
 @RestController
 @RequestMapping("/command/content")
-public class CommandContentController extends BaseController{
+public class CommandContentController extends BaseController {
     private final Logger logger = LoggerFactory.getLogger(CommandContentController.class);
 
     @Resource
@@ -59,18 +59,24 @@ public class CommandContentController extends BaseController{
     }
 
     @PostMapping("/list")
-    public ApiResponse list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    public ApiResponse list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "10") Integer size) {
         PageHelper.startPage(page, size);
         List<CommandContent> list = commandContentService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ApiResponse.creatSuccess(pageInfo);
     }
 
+    @GetMapping("/cc/{id}")
+    public ApiResponse getCommandContentByOther(@PathVariable("id") int id) {
+        CommandContent lCommandContent = commandContentService.findBy("commandId", id);
+        return ApiResponse.creatSuccess(lCommandContent);
+    }
+
     @Cacheable(value = "get_join_list")
     @GetMapping("/getLeftJoin")
     public ApiResponse getLeftJoin() {
         User lUser = mSessionUserInfo.getCurrentSessionUser(User.class);
-        logger.info("================"+lUser.getId());
+        logger.info("================" + lUser.getId());
         List<CommentVO> list = commandContentService.getCommandLeftJoin();
         logger.info("这句话只会在缓存失效的时候才会出现");
         return ApiResponse.creatSuccess(list);

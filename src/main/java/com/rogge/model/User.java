@@ -20,6 +20,17 @@ public class User {
     @Column(name = "register_date")
     private Date registerDate;
 
+    private String email;
+
+    @Column(name = "pass_word")
+    private String passWord;
+
+    @Column(name = "reg_time")
+    private String regTime;
+
+    @Column(name = "user_name")
+    private String userName;
+
     /**
      * @return id
      */
@@ -102,5 +113,61 @@ public class User {
      */
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
+    }
+
+    /**
+     * @return email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * @return pass_word
+     */
+    public String getPassWord() {
+        return passWord;
+    }
+
+    /**
+     * @param passWord
+     */
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
+
+    /**
+     * @return reg_time
+     */
+    public String getRegTime() {
+        return regTime;
+    }
+
+    /**
+     * @param regTime
+     */
+    public void setRegTime(String regTime) {
+        this.regTime = regTime;
+    }
+
+    /**
+     * @return user_name
+     */
+    public String getUserName() {
+        return userName;
+    }
+
+    /**
+     * @param userName
+     */
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

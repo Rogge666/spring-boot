@@ -11,5 +11,9 @@
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="sex" jdbcType="INTEGER" property="sex" />
     <result column="register_date" jdbcType="TIMESTAMP" property="registerDate" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="pass_word" jdbcType="VARCHAR" property="passWord" />
+    <result column="reg_time" jdbcType="VARCHAR" property="regTime" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
   </resultMap>
 </mapper>

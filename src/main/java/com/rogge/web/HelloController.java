@@ -35,7 +35,7 @@ public class HelloController extends BaseController {
         lUser.setName("rogge");
         mSessionUserInfo.setSessionUser(session, lUser);
         logger.info(lUser.getId());
-        return ApiResponse.creatSuccess("Hello World" + mPersonProperties.toString());
+        return ApiResponse.creatSuccess(mPersonProperties);
     }
 
 }

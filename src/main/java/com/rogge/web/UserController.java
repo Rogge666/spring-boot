@@ -1,4 +1,5 @@
 package com.rogge.web;
+import com.rogge.core.BaseController;
 import com.rogge.core.ApiResponse;
 import com.rogge.model.User;
 import com.rogge.service.UserService;
@@ -19,12 +20,12 @@ import java.util.List;
 * <p>
 * [Tips]
 *
-* @author Created by Rogge on 2017/10/06
+* @author Created by Rogge on 2017/10/07
 * @since 1.0.0
 */
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController{
     @Resource
     private UserService userService;
 

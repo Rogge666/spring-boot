@@ -70,6 +70,10 @@ public interface ResponseCode {
          */
         API_ERR(5, "接口异常", "API error"),
         /**
+         * 基础返回码--MybatisTooManyException
+         */
+        TOO_MANY_EXCEP(6, "查询结果不唯一", "TOO MANY Exception"),
+        /**
          * 基础返回码--系统错误
          */
         SYSTEM_ERR(10, "系统繁忙，请稍候再试", "System is busy, please try again later");
