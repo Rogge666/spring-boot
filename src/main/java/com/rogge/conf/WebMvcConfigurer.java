@@ -119,7 +119,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         //登录过滤器
         registry.addInterceptor(mLoginInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/showHello", "/showHi");
+                .excludePathPatterns("/showHello", "/showHi", "/swagger-ui.html");
     }
 
     private void responseResult(HttpServletResponse response, ApiResponse apiResponse) {

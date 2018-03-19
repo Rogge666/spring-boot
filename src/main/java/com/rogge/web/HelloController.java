@@ -4,6 +4,7 @@ import com.rogge.PersonProperties;
 import com.rogge.common.model.User;
 import com.rogge.core.ApiResponse;
 import com.rogge.core.BaseController;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class HelloController extends BaseController {
     @Resource
     private PersonProperties mPersonProperties;
 
+    @ApiOperation(value = "登录接口")
     @GetMapping({"/showHello", "/showHi"})
     public ApiResponse showHello(HttpSession session) {
         User lUser = new User();
