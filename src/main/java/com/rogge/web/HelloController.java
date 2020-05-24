@@ -4,10 +4,14 @@ import com.rogge.PersonProperties;
 import com.rogge.common.model.User;
 import com.rogge.core.ApiResponse;
 import com.rogge.core.BaseController;
+import com.rogge.mq.ProducerServiceImpl;
+import com.rogge.mq.RocketMqConfig;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -29,6 +33,9 @@ public class HelloController extends BaseController {
     @Resource
     private PersonProperties mPersonProperties;
 
+    @Resource
+    private ProducerServiceImpl producer;
+
     @ApiOperation(value = "登录接口")
     @GetMapping({"/showHello", "/showHi"})
     public ApiResponse showHello(HttpSession session) {
@@ -38,6 +45,18 @@ public class HelloController extends BaseController {
         mSessionUserInfo.setSessionUser(session, lUser);
         logger.info(lUser.getId());
         return ApiResponse.creatSuccess(mPersonProperties);
+    }
+
+    @ApiOperation(value = "发送消息")
+    @GetMapping("/push/{id}")
+    public ApiResponse sendMsg(@PathVariable("id") String id) {
+        for (int lI = 0; lI < 10; lI++) {
+            User lUser = new User();
+            lUser.setId(lI + "");
+            lUser.setName("rogge");
+            producer.send(RocketMqConfig.TOPIC_TEST1, RocketMqConfig.TAG_ORDER, lUser);
+        }
+        return ApiResponse.creatSuccess("发送消息成功" + id);
     }
 
 }

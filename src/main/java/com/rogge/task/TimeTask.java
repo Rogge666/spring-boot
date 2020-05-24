@@ -1,9 +1,7 @@
 package com.rogge.task;
 
-import com.rogge.web.HelloController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -25,12 +23,12 @@ public class TimeTask {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(cron="0/10 * *  * * ? ")
+//    @Scheduled(cron="0/10 * *  * * ? ")
     public void reportCurrentTime() {
         logger.info("现在时间：" + dateFormat.format(new Date()));
     }
 
-    @Scheduled(fixedRate = 10000)
+//    @Scheduled(fixedRate = 10000)
     public void fixedRate() {
         logger.info("fixedRate：" + dateFormat.format(new Date()));
     }
