@@ -24,7 +24,7 @@ spring:
     database: 0         # Redis数据库索引（默认为0）
     host: 120.27.3.97   # Redis服务器地址
     port: 6379          # Redis服务器连接端口
-    password: @#ASddasd123129:$)...asdsd{!dsdfsdfdf
+    password:
     pool.max-active: 8  # 连接池最大连接数（使用负值表示没有限制）
     pool.max-wait: -1   # 连接池最大阻塞等待时间（使用负值表示没有限制）
     pool.max-idle: 8    # 连接池中的最大空闲连接
@@ -41,3 +41,25 @@ apache:
     ###消费者名称
     consumer:
       consumerGroup1: RoggeConsumer1
+
+## redis 配置
+rogge:
+  redis:
+    # 模式 Pool 单节点  Cluster 集群 Sentinel 哨兵
+    model: Pool
+    # 节点
+    nodes: 120.27.3.97:6379
+    # 密码
+    password: "@#ASddasd123129:$)...asdsd{!dsdfsdfdf"
+    # 连接池中的最大连接数（使用负值表示没有限制）
+    max-active: 1000
+    # 连接池中的最大空闲连接
+    max-idle: 10
+    # 连接池最大阻塞等待时间（使用负值表示没有限制）
+    max-wait: -1
+    # 连接超时时间
+    connectionTimeout: 6000
+    # 读取超时时间
+    soTimeout: 6000
+    # 超时重试次数:负数表示集群节点数
+    max-attempts: 1

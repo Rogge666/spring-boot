@@ -4,6 +4,7 @@ import com.rogge.PersonProperties;
 import com.rogge.common.model.User;
 import com.rogge.core.ApiResponse;
 import com.rogge.core.BaseController;
+import com.rogge.module.redis.RedisClient;
 import com.rogge.mq.ProducerServiceImpl;
 import com.rogge.mq.RocketMqConfig;
 import io.swagger.annotations.ApiOperation;
@@ -36,9 +37,13 @@ public class HelloController extends BaseController {
     @Resource
     private ProducerServiceImpl producer;
 
+    @Resource
+    private RedisClient mRedisClient;
+
     @ApiOperation(value = "登录接口")
     @GetMapping({"/showHello", "/showHi"})
     public ApiResponse showHello(HttpSession session) {
+        mRedisClient.set("aaaaa", "wulei");
         User lUser = new User();
         lUser.setId("111111");
         lUser.setName("rogge");
@@ -50,6 +55,7 @@ public class HelloController extends BaseController {
     @ApiOperation(value = "发送消息")
     @GetMapping("/push/{id}")
     public ApiResponse sendMsg(@PathVariable("id") String id) {
+        logger.info(mRedisClient.get("aaaaa"));
         for (int lI = 0; lI < 10; lI++) {
             User lUser = new User();
             lUser.setId(lI + "");
