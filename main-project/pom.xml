@@ -157,6 +157,9 @@
 			<groupId>com.rogge.module</groupId>
 			<artifactId>autoconfig</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>system</scope>
+			<systemPath>/home/admin/soft/apache-maven-3.8.1/repo/com/rogge/module/autoconfig/0.0.1-SNAPSHOT/autoconfig-0.0.1-SNAPSHOT.jar
+			</systemPath>
 		</dependency>
 	</dependencies>
 
