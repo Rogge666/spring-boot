@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.util.StringUtils;
 import redis.clients.jedis.*;
 
+import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,11 +31,9 @@ import java.util.Set;
 @EnableConfigurationProperties(RoggeRedisProperties.class)
 public class RoggeRedisConfiguration {
 
+    @Resource
     private RoggeRedisProperties mProperties;
 
-    public RoggeRedisConfiguration(RoggeRedisProperties properties) {
-        this.mProperties = properties;
-    }
 
     @ConditionalOnExpression("'Pool'.equals('${rogge.redis.model}')")
     @Bean
@@ -105,12 +104,4 @@ public class RoggeRedisConfiguration {
         return poolConfig;
     }
 
-
-    public RoggeRedisProperties getProperties() {
-        return mProperties;
-    }
-
-    public void setProperties(RoggeRedisProperties properties) {
-        mProperties = properties;
-    }
 }

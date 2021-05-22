@@ -16,7 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RoggeRedisProperties {
 
     /**
-     * 模式：Pool Cluster Sentinel
+     * 模式：Pool Cluster（集群-分布式，高并发） Sentinel（哨兵-HA 高可用）
      */
     private String model;
     /**
