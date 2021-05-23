@@ -26,7 +26,7 @@
 
 	<modules>
 		<module>main-project</module>
-		<!--<module>autoconfig</module>-->
+		<module>autoconfig</module>
 	</modules>
 
 	<dependencies>
